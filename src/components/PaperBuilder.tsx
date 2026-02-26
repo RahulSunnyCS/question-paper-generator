@@ -1,7 +1,12 @@
 import { FormEvent, useMemo } from 'react';
-import { questionTypes, usePaperBuilderStore } from '../store/paperBuilderStore';
-import { Paper } from '../types/paper';
-import { PaginatedPreview } from './PaginatedPreview';
+import { questionTypes, usePaperBuilderStore } from '@/store/paperBuilderStore';
+import { Paper } from '@/types/paper';
+import { PaginatedPreview } from '@/components/PaginatedPreview';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 
 export const PaperBuilder = () => {
   const {
@@ -52,213 +57,208 @@ export const PaperBuilder = () => {
       <form onSubmit={handleValidate} className="space-y-4 rounded-xl bg-white p-6 shadow">
         <div>
           <label className="mb-1 block text-sm font-medium text-slate-700">Paper Title</label>
-          <input
-            value={paperTitle}
-            onChange={(event) => setPaperTitle(event.target.value)}
-            className="w-full rounded border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
-            placeholder="Mid-Term Examination"
-          />
+          <Input value={paperTitle} onChange={(event) => setPaperTitle(event.target.value)} placeholder="Mid-Term Examination" />
         </div>
 
-        {sections.map((section, sectionIndex) => {
-          const sectionError = errors[section.id];
+        <Accordion
+          type="multiple"
+          defaultValue={sections.map((section) => section.id)}
+          className="space-y-4"
+        >
+          {sections.map((section, sectionIndex) => {
+            const sectionError = errors[section.id];
 
-          return (
-            <div key={section.id} className="rounded-lg border border-slate-200 p-4">
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-slate-800">Section {sectionIndex + 1}</h2>
-                <button
-                  type="button"
-                  onClick={() => removeSection(section.id)}
-                  className="text-xs text-rose-600 hover:text-rose-700"
-                >
-                  Remove Section
-                </button>
-              </div>
+            return (
+              <AccordionItem key={section.id} value={section.id}>
+                <div className="flex items-center justify-between gap-3 px-2">
+                  <AccordionTrigger className="flex-1 py-4 text-sm font-semibold text-slate-800">
+                    Section {sectionIndex + 1}: {section.title || 'Untitled Section'}
+                  </AccordionTrigger>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => removeSection(section.id)}
+                    className="mr-2"
+                  >
+                    Remove Section
+                  </Button>
+                </div>
 
-              <div className="space-y-2">
-                <input
-                  value={section.title}
-                  onChange={(event) => updateSection(section.id, { title: event.target.value })}
-                  className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
-                  placeholder="Section title"
-                />
-                {sectionError?.title && <p className="text-xs text-rose-600">{sectionError.title}</p>}
+                <AccordionContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Input
+                      value={section.title}
+                      onChange={(event) => updateSection(section.id, { title: event.target.value })}
+                      placeholder="Section title"
+                    />
+                    {sectionError?.title && <p className="text-xs text-rose-600">{sectionError.title}</p>}
 
-                <textarea
-                  value={section.instructions}
-                  onChange={(event) =>
-                    updateSection(section.id, {
-                      instructions: event.target.value,
-                    })
-                  }
-                  className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
-                  placeholder="Instructions (optional)"
-                  rows={2}
-                />
-              </div>
+                    <Textarea
+                      value={section.instructions}
+                      onChange={(event) =>
+                        updateSection(section.id, {
+                          instructions: event.target.value,
+                        })
+                      }
+                      placeholder="Instructions (optional)"
+                      rows={2}
+                    />
+                  </div>
 
-              <div className="mt-4 space-y-3">
-                {section.questions.map((question, questionIndex) => {
-                  const questionError = sectionError?.questions[question.id];
+                  <Accordion
+                    type="multiple"
+                    defaultValue={section.questions.map((question) => `${section.id}:${question.id}`)}
+                    className="space-y-3"
+                  >
+                    {section.questions.map((question, questionIndex) => {
+                      const questionError = sectionError?.questions[question.id];
+                      const questionValue = `${section.id}:${question.id}`;
 
-                  return (
-                    <div key={question.id} className="rounded border border-slate-200 bg-slate-50 p-3">
-                      <div className="mb-2 flex items-center justify-between">
-                        <p className="text-xs font-medium text-slate-700">Question {questionIndex + 1}</p>
-                        <button
-                          type="button"
-                          onClick={() => removeQuestion(section.id, question.id)}
-                          className="text-xs text-rose-600"
-                        >
-                          Remove
-                        </button>
-                      </div>
+                      return (
+                        <AccordionItem key={question.id} value={questionValue} className="bg-slate-50">
+                          <div className="flex items-center justify-between gap-3 px-2">
+                            <AccordionTrigger className="flex-1 py-3 text-xs font-medium text-slate-700">
+                              Question {questionIndex + 1}
+                            </AccordionTrigger>
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => removeQuestion(section.id, question.id)}
+                              className="mr-2"
+                            >
+                              Remove
+                            </Button>
+                          </div>
 
-                      <div className="grid gap-2 md:grid-cols-3">
-                        <textarea
-                          value={question.text}
-                          onChange={(event) =>
-                            updateQuestion(section.id, question.id, { text: event.target.value })
-                          }
-                          className="md:col-span-2 rounded border border-slate-300 px-3 py-2 text-sm"
-                          rows={2}
-                          placeholder="Enter question text"
-                        />
-
-                        <div className="space-y-2">
-                          <select
-                            value={question.type}
-                            onChange={(event) =>
-                              updateQuestion(section.id, question.id, {
-                                type: event.target.value as (typeof questionTypes)[number],
-                              })
-                            }
-                            className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
-                          >
-                            {questionTypes.map((type) => (
-                              <option key={type} value={type}>
-                                {type}
-                              </option>
-                            ))}
-                          </select>
-
-                          <input
-                            type="number"
-                            min={1}
-                            value={question.marks}
-                            onChange={(event) =>
-                              updateQuestion(section.id, question.id, {
-                                marks:
-                                  event.target.value === '' ? '' : Number.parseInt(event.target.value, 10),
-                              })
-                            }
-                            className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
-                            placeholder="Marks"
-                          />
-                        </div>
-                      </div>
-
-                      {question.type === 'Fill in the Blanks' && (
-                        <div className="mt-2">
-                          <input
-                            value={question.blankAnswer ?? ''}
-                            onChange={(event) =>
-                              updateQuestion(section.id, question.id, {
-                                blankAnswer: event.target.value,
-                              })
-                            }
-                            className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
-                            placeholder="Expected answer"
-                          />
-                        </div>
-                      )}
-
-                      {question.type === 'Match the Following' && (
-                        <div className="mt-2 space-y-2">
-                          {question.matchPairs.map((pair) => (
-                            <div key={pair.id} className="grid grid-cols-[1fr_1fr_auto] gap-2">
-                              <input
-                                value={pair.left}
-                                onChange={(event) =>
-                                  updateMatchPair(
-                                    section.id,
-                                    question.id,
-                                    pair.id,
-                                    'left',
-                                    event.target.value,
-                                  )
-                                }
-                                className="rounded border border-slate-300 px-3 py-2 text-sm"
-                                placeholder="Column A"
+                          <AccordionContent className="space-y-2 bg-slate-50">
+                            <div className="grid gap-2 md:grid-cols-3">
+                              <Textarea
+                                value={question.text}
+                                onChange={(event) => updateQuestion(section.id, question.id, { text: event.target.value })}
+                                className="md:col-span-2"
+                                rows={2}
+                                placeholder="Enter question text"
                               />
-                              <input
-                                value={pair.right}
-                                onChange={(event) =>
-                                  updateMatchPair(
-                                    section.id,
-                                    question.id,
-                                    pair.id,
-                                    'right',
-                                    event.target.value,
-                                  )
-                                }
-                                className="rounded border border-slate-300 px-3 py-2 text-sm"
-                                placeholder="Column B"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => removeMatchPair(section.id, question.id, pair.id)}
-                                className="rounded bg-rose-100 px-2 text-xs text-rose-700"
-                              >
-                                Delete
-                              </button>
+
+                              <div className="space-y-2">
+                                <Select
+                                  value={question.type}
+                                  onChange={(event) =>
+                                    updateQuestion(section.id, question.id, {
+                                      type: event.target.value as (typeof questionTypes)[number],
+                                    })
+                                  }
+                                >
+                                  {questionTypes.map((type) => (
+                                    <option key={type} value={type}>
+                                      {type}
+                                    </option>
+                                  ))}
+                                </Select>
+
+                                <Input
+                                  type="number"
+                                  min={1}
+                                  value={question.marks}
+                                  onChange={(event) =>
+                                    updateQuestion(section.id, question.id, {
+                                      marks: event.target.value === '' ? '' : Number.parseInt(event.target.value, 10),
+                                    })
+                                  }
+                                  placeholder="Marks"
+                                />
+                              </div>
                             </div>
-                          ))}
 
-                          <button
-                            type="button"
-                            onClick={() => addMatchPair(section.id, question.id)}
-                            className="rounded border border-indigo-400 px-3 py-1 text-xs text-indigo-700"
-                          >
-                            + Add Match Pair
-                          </button>
-                        </div>
-                      )}
+                            {question.type === 'Fill in the Blanks' && (
+                              <Input
+                                value={question.blankAnswer ?? ''}
+                                onChange={(event) =>
+                                  updateQuestion(section.id, question.id, {
+                                    blankAnswer: event.target.value,
+                                  })
+                                }
+                                placeholder="Expected answer"
+                              />
+                            )}
 
-                      <div className="mt-1 space-y-1 text-xs text-rose-600">
-                        {questionError?.text && <p>{questionError.text}</p>}
-                        {questionError?.marks && <p>{questionError.marks}</p>}
-                        {questionError?.blankAnswer && <p>{questionError.blankAnswer}</p>}
-                        {questionError?.matchPairs && <p>{questionError.matchPairs}</p>}
-                      </div>
-                    </div>
-                  );
-                })}
+                            {question.type === 'Match the Following' && (
+                              <div className="mt-2 space-y-2">
+                                {question.matchPairs.map((pair) => (
+                                  <div key={pair.id} className="grid grid-cols-[1fr_1fr_auto] gap-2">
+                                    <Input
+                                      value={pair.left}
+                                      onChange={(event) =>
+                                        updateMatchPair(section.id, question.id, pair.id, 'left', event.target.value)
+                                      }
+                                      placeholder="Column A"
+                                    />
+                                    <Input
+                                      value={pair.right}
+                                      onChange={(event) =>
+                                        updateMatchPair(section.id, question.id, pair.id, 'right', event.target.value)
+                                      }
+                                      placeholder="Column B"
+                                    />
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => removeMatchPair(section.id, question.id, pair.id)}
+                                      className="bg-rose-100 text-rose-700 hover:bg-rose-200"
+                                    >
+                                      Delete
+                                    </Button>
+                                  </div>
+                                ))}
 
-                <button
-                  type="button"
-                  onClick={() => addQuestion(section.id)}
-                  className="rounded border border-indigo-500 px-3 py-1 text-xs font-medium text-indigo-700"
-                >
-                  + Add Question
-                </button>
-              </div>
-            </div>
-          );
-        })}
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => addMatchPair(section.id, question.id)}
+                                  className="border-indigo-400"
+                                >
+                                  + Add Match Pair
+                                </Button>
+                              </div>
+                            )}
+
+                            <div className="mt-1 space-y-1 text-xs text-rose-600">
+                              {questionError?.text && <p>{questionError.text}</p>}
+                              {questionError?.marks && <p>{questionError.marks}</p>}
+                              {questionError?.blankAnswer && <p>{questionError.blankAnswer}</p>}
+                              {questionError?.matchPairs && <p>{questionError.matchPairs}</p>}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      );
+                    })}
+                  </Accordion>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => addQuestion(section.id)}
+                  >
+                    + Add Question
+                  </Button>
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
 
         <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={addSection}
-            className="rounded bg-indigo-50 px-3 py-2 text-sm text-indigo-700"
-          >
+          <Button type="button" variant="secondary" onClick={addSection}>
             + Add Section
-          </button>
-          <button type="submit" className="rounded bg-indigo-600 px-3 py-2 text-sm text-white">
+          </Button>
+          <Button type="submit" variant="default">
             Validate Paper
-          </button>
+          </Button>
         </div>
       </form>
 
