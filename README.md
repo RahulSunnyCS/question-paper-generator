@@ -1,6 +1,6 @@
 # Deterministic Server-side PDF Generation
 
-This repository now includes deterministic Playwright-based PDF generation utilities for Next.js server routes.
+This repository includes Playwright-based PDF generation utilities exposed through a Next.js API route.
 
 ## Added structure
 
@@ -16,35 +16,28 @@ This repository now includes deterministic Playwright-based PDF generation utili
 ## 1) Install dependencies
 
 ```bash
-npm install playwright
+npm install
 npx playwright install chromium
 ```
 
-## 2) Make sure your TypeScript path aliases support root imports (recommended)
-
-If your Next.js project uses path aliases, add aliases like:
-
-```json
-{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/lib/*": ["lib/*"],
-      "@/shared/*": ["shared/*"]
-    }
-  }
-}
-```
-
-> The example route currently uses relative imports so it works even without aliases.
-
-## 3) Start your Next.js app
+## 2) Run the backend server that hosts PDF generation
 
 ```bash
-npm run dev
+npm run dev:backend
 ```
 
-## 4) Call the API route
+This starts a Next.js server (default: `http://localhost:3000`) with the route:
+
+- `POST /api/generate-pdf`
+
+For production mode:
+
+```bash
+npm run build:backend
+npm run start:backend
+```
+
+## 3) Call the API route
 
 ```bash
 curl -X POST http://localhost:3000/api/generate-pdf \
@@ -74,6 +67,10 @@ curl -X POST http://localhost:3000/api/generate-pdf \
   }' \
   --output paper.pdf
 ```
+
+## Frontend state management note
+
+The frontend still uses Zustand for paper builder state via `src/store/paperBuilderStore.ts`, so `zustand` remains a required dependency and has not been removed.
 
 ## Notes on determinism and performance
 
