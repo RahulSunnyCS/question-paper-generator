@@ -1,35 +1,12 @@
-export type QuestionType = 'Fill in the Blanks' | 'Match the Following' | 'Descriptive';
+import type { Section } from '../../shared/types/paper';
 
-export interface MatchPair {
-  id: string;
-  left: string;
-  right: string;
-}
-
-export interface Question {
-  id: string;
-  type: QuestionType;
-  text: string;
-  marks: number | '';
-  blankAnswer?: string;
-  matchPairs: MatchPair[];
-}
-
-export interface Section {
-  id: string;
-  title: string;
-  instructions: string;
-  questions: Question[];
-}
-
-export interface Paper {
-  paperTitle: string;
-  subject: string;
-  duration: string;
-  totalMarks: number;
-  instructions: string[];
-  sections: Section[];
-}
+export type {
+  MatchPair,
+  Paper,
+  Question,
+  QuestionType,
+  Section,
+} from '../../shared/types/paper';
 
 export interface ValidationError {
   title?: string;
