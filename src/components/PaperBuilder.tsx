@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { DownloadPdfButton } from '@/components/DownloadPdfButton';
 
 export const PaperBuilder = () => {
   const {
@@ -252,13 +253,14 @@ export const PaperBuilder = () => {
           })}
         </Accordion>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button type="button" variant="secondary" onClick={addSection}>
             + Add Section
           </Button>
           <Button type="submit" variant="default">
             Validate Paper
           </Button>
+          <DownloadPdfButton paper={printPaper} />
         </div>
       </form>
 
