@@ -1,4 +1,4 @@
-export type QuestionType = 'Fill in the Blanks' | 'Match the Following';
+export type QuestionType = 'Fill in the Blanks' | 'Match the Following' | 'Descriptive';
 
 export interface MatchPair {
   id: string;
@@ -20,6 +20,15 @@ export interface Section {
   title: string;
   instructions: string;
   questions: Question[];
+}
+
+export interface Paper {
+  paperTitle: string;
+  subject: string;
+  duration: string;
+  totalMarks: number;
+  instructions: string[];
+  sections: Section[];
 }
 
 export interface ValidationError {
