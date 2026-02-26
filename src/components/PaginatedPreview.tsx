@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Previewer } from 'pagedjs';
 import { Paper } from '../types/paper';
 import { QuestionPaperPrintLayout } from './QuestionPaperPrintLayout';
 import './PaginatedPreview.css';
@@ -7,66 +8,6 @@ interface PaginatedPreviewProps {
   paper: Paper;
   enableRefreshButton?: boolean;
 }
-
-type PagedPreviewer = {
-  preview: (content: Element, stylesheets?: string[], renderTo?: Element) => Promise<unknown>;
-};
-
-declare global {
-  interface Window {
-    Paged?: {
-      Previewer: new () => PagedPreviewer;
-    };
-  }
-}
-
-const PAGED_SCRIPT_ID = 'pagedjs-polyfill';
-const PAGED_SCRIPT_SRC = 'https://unpkg.com/pagedjs/dist/paged.polyfill.js';
-
-const waitForPaged = async () => {
-  if (window.Paged?.Previewer) {
-    return window.Paged;
-  }
-
-  const existingScript = document.getElementById(PAGED_SCRIPT_ID) as HTMLScriptElement | null;
-
-  if (existingScript) {
-    await new Promise<void>((resolve, reject) => {
-      if (window.Paged?.Previewer) {
-        resolve();
-        return;
-      }
-
-      existingScript.addEventListener('load', () => resolve(), { once: true });
-      existingScript.addEventListener('error', () => reject(new Error('Failed to load Paged.js script.')), {
-        once: true,
-      });
-    });
-
-    if (!window.Paged?.Previewer) {
-      throw new Error('Paged.js script loaded, but Previewer is unavailable.');
-    }
-
-    return window.Paged;
-  }
-
-  const script = document.createElement('script');
-  script.id = PAGED_SCRIPT_ID;
-  script.src = PAGED_SCRIPT_SRC;
-  script.async = true;
-
-  await new Promise<void>((resolve, reject) => {
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error('Failed to load Paged.js script.'));
-    document.head.appendChild(script);
-  });
-
-  if (!window.Paged?.Previewer) {
-    throw new Error('Paged.js script loaded, but Previewer is unavailable.');
-  }
-
-  return window.Paged;
-};
 
 const waitForFonts = async () => {
   if (!('fonts' in document)) {
@@ -96,13 +37,12 @@ export const PaginatedPreview = ({ paper, enableRefreshButton = true }: Paginate
     previewNode.replaceChildren();
 
     await waitForFonts();
-    const paged = await waitForPaged();
 
     if (currentRun !== runIdRef.current) {
       return;
     }
 
-    const previewer = new paged.Previewer();
+    const previewer = new Previewer();
 
     await previewer.preview(sourceNode, [], previewNode);
 
