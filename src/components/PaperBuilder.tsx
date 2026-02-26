@@ -1,5 +1,7 @@
-import { FormEvent } from 'react';
+import { FormEvent, useMemo } from 'react';
 import { questionTypes, usePaperBuilderStore } from '../store/paperBuilderStore';
+import { Paper } from '../types/paper';
+import { PaginatedPreview } from './PaginatedPreview';
 
 export const PaperBuilder = () => {
   const {
@@ -18,6 +20,27 @@ export const PaperBuilder = () => {
     removeMatchPair,
     validatePaper,
   } = usePaperBuilderStore();
+
+  const printPaper = useMemo<Paper>(() => {
+    const totalMarks = sections.reduce(
+      (sectionSum, section) =>
+        sectionSum +
+        section.questions.reduce(
+          (questionSum, question) => questionSum + (typeof question.marks === 'number' ? question.marks : 0),
+          0,
+        ),
+      0,
+    );
+
+    return {
+      paperTitle: paperTitle.trim() || 'Untitled Question Paper',
+      subject: 'General',
+      duration: '3 Hours',
+      totalMarks,
+      instructions: ['Answer all questions.', 'Write clearly and legibly.'],
+      sections,
+    };
+  }, [paperTitle, sections]);
 
   const handleValidate = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -239,50 +262,7 @@ export const PaperBuilder = () => {
         </div>
       </form>
 
-      <aside className="rounded-xl bg-white p-6 shadow">
-        <h2 className="mb-4 border-b border-slate-200 pb-2 text-lg font-bold text-slate-800">{paperTitle}</h2>
-
-        <div className="space-y-4">
-          {sections.map((section, sectionIndex) => (
-            <section key={section.id} className="space-y-2">
-              <h3 className="font-semibold text-slate-700">
-                Section {sectionIndex + 1}: {section.title || 'Untitled Section'}
-              </h3>
-              {section.instructions && <p className="text-sm text-slate-600">{section.instructions}</p>}
-
-              <ol className="space-y-2 pl-5 text-sm text-slate-800">
-                {section.questions.map((question) => (
-                  <li key={question.id} className="list-decimal">
-                    <div className="flex items-start justify-between gap-3">
-                      <p>{question.text || 'Question text pending...'}</p>
-                      <span className="whitespace-nowrap text-xs text-slate-500">[{question.marks || 0} marks]</span>
-                    </div>
-                    <p className="text-xs text-slate-500">Type: {question.type}</p>
-
-                    {question.type === 'Fill in the Blanks' && (
-                      <p className="text-xs text-slate-500">Answer: {question.blankAnswer || 'Not provided'}</p>
-                    )}
-
-                    {question.type === 'Match the Following' && (
-                      <ul className="mt-1 list-disc pl-5 text-xs text-slate-600">
-                        {question.matchPairs.length === 0 ? (
-                          <li>No match pairs added yet.</li>
-                        ) : (
-                          question.matchPairs.map((pair) => (
-                            <li key={pair.id}>
-                              {pair.left || '...'} ↔ {pair.right || '...'}
-                            </li>
-                          ))
-                        )}
-                      </ul>
-                    )}
-                  </li>
-                ))}
-              </ol>
-            </section>
-          ))}
-        </div>
-      </aside>
+      <PaginatedPreview paper={printPaper} enableRefreshButton />
     </div>
   );
 };

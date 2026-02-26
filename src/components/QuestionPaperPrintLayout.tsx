@@ -73,16 +73,9 @@ export const QuestionPaperPrintLayout = ({ paper }: QuestionPaperPrintLayoutProp
   return (
     <article className="mx-auto w-full max-w-[210mm] bg-white p-8 text-slate-950 print:p-0">
       <style>{`
-        @page {
-          size: A4;
-          margin: 20mm;
-        }
-
-        @media print {
-          .print-avoid-break {
-            break-inside: avoid;
-            page-break-inside: avoid;
-          }
+        .print-avoid-break {
+          break-inside: avoid;
+          page-break-inside: avoid;
         }
       `}</style>
 

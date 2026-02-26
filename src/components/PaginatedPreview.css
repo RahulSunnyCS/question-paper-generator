@@ -1,0 +1,21 @@
+@page {
+  size: A4;
+  margin: 20mm;
+
+  @bottom-right {
+    content: 'Page ' counter(page) ' of ' counter(pages);
+    font-size: 10px;
+  }
+}
+
+.paged-preview-output .pagedjs_pages {
+  display: grid;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.paged-preview-source {
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
