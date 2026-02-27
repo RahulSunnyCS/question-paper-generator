@@ -68,6 +68,32 @@ curl -X POST http://localhost:3000/api/generate-pdf \
   --output paper.pdf
 ```
 
+
+## Running frontend and backend on different ports
+
+If you run the webpack frontend and Next.js backend separately, keep them on different ports and let webpack proxy API calls:
+
+```bash
+# terminal 1 (backend)
+npm run dev:backend
+
+# terminal 2 (frontend, defaults to 3009)
+npm run start
+```
+
+Optional environment overrides:
+
+- `FE_PORT` (default `3009`) for webpack dev server.
+- `BACKEND_URL` (default `http://localhost:3000`) proxy target for `/api/*` requests.
+
+Example:
+
+```bash
+FE_PORT=3010 BACKEND_URL=http://localhost:3000 npm run start
+```
+
+The frontend can keep calling `/api/generate-pdf`; webpack forwards it to the backend to avoid 404/CORS issues.
+
 ## Frontend state management note
 
 The frontend still uses Zustand for paper builder state via `src/store/paperBuilderStore.ts`, so `zustand` remains a required dependency and has not been removed.
