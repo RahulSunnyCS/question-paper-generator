@@ -33,7 +33,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     console.info('[pdf] Generating PDF for paper:', payload.paperTitle);
 
     const pdfBuffer = await generatePdf(payload);
-    const pdfBlob = new Blob([pdfBuffer], { type: 'application/pdf' });
+    const pdfBytes = new Uint8Array(pdfBuffer);
+    const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
 
     return new NextResponse(pdfBlob, {
       status: 200,
