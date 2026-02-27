@@ -20,7 +20,17 @@ module.exports = {
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
-        use: 'ts-loader',
+        use: {
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true,
+            configFile: path.resolve(__dirname, 'tsconfig.json'),
+            compilerOptions: {
+              noEmit: false,
+              jsx: 'react-jsx',
+            },
+          },
+        },
       },
       {
         test: /\.css$/i,
@@ -35,7 +45,14 @@ module.exports = {
   ],
   devServer: {
     historyApiFallback: true,
-    port: 3000,
+    port: Number(process.env.FE_PORT) || 3009,
     hot: true,
+    proxy: [
+      {
+        context: ['/api'],
+        target: process.env.BACKEND_URL || 'http://localhost:3000',
+        changeOrigin: true,
+      },
+    ],
   },
 };
