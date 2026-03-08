@@ -18,7 +18,10 @@ const AnswerLines = ({ lines = 4 }: AnswerLinesProps) => (
 
 const renderFillInTheBlank = (question: Question) => {
   const minBlanks = 1;
-  const inferredBlanks = Math.max(minBlanks, Math.ceil((question.blankAnswer?.trim().length ?? 12) / 12));
+  const inferredBlanks = Math.max(
+    minBlanks,
+    Math.ceil((question.blankAnswer?.trim().length ?? 12) / 12),
+  );
 
   return (
     <div className="qp-fill-blanks" aria-hidden="true">
@@ -402,9 +405,12 @@ export const QuestionPaperPrintLayout = ({ paper }: QuestionPaperPrintLayoutProp
         </div>
 
         <div className="qp-meta-row">
-          <p><span className="qp-label">Subject:</span> {paper.subject}</p>
           <p>
-            <span className="qp-label">Duration:</span> {paper.duration} &nbsp;|&nbsp; <span className="qp-label">Total Marks:</span> {paper.totalMarks}
+            <span className="qp-label">Subject:</span> {paper.subject}
+          </p>
+          <p>
+            <span className="qp-label">Duration:</span> {paper.duration} &nbsp;|&nbsp;{' '}
+            <span className="qp-label">Total Marks:</span> {paper.totalMarks}
           </p>
         </div>
       </header>
@@ -412,7 +418,8 @@ export const QuestionPaperPrintLayout = ({ paper }: QuestionPaperPrintLayoutProp
       <section className="qp-info-block print-avoid-break">
         <h2 className="qp-block-title">Information</h2>
         <p>
-          Answer all questions. Write clearly in the spaces provided. Marks for each question are shown in brackets at the right.
+          Answer all questions. Write clearly in the spaces provided. Marks for each question are
+          shown in brackets at the right.
         </p>
       </section>
 
@@ -435,7 +442,9 @@ export const QuestionPaperPrintLayout = ({ paper }: QuestionPaperPrintLayoutProp
           return (
             <section key={section.id} className="qp-section print-avoid-break">
               <div className="qp-section-title-row">
-                <h3 className="qp-section-title">Section {String.fromCharCode(65 + sectionIndex)}: {section.title}</h3>
+                <h3 className="qp-section-title">
+                  Section {String.fromCharCode(65 + sectionIndex)}: {section.title}
+                </h3>
                 <p className="qp-marks">[{totalSectionMarks}]</p>
               </div>
 
@@ -464,7 +473,9 @@ export const QuestionPaperPrintLayout = ({ paper }: QuestionPaperPrintLayoutProp
                             <div className="qp-subparts">
                               {subparts.map((part, index) => (
                                 <div key={`${question.id}-subpart-${index}`} className="qp-subpart">
-                                  <span className="qp-subpart-label">{String.fromCharCode(65 + index)})</span>
+                                  <span className="qp-subpart-label">
+                                    {String.fromCharCode(65 + index)})
+                                  </span>
                                   <span>{part}</span>
                                 </div>
                               ))}

@@ -67,13 +67,20 @@ interface AccordionItemProps {
 
 const AccordionItemContext = createContext<{ value: string } | null>(null);
 
-export const AccordionItem = ({ value, className, children }: PropsWithChildren<AccordionItemProps>) => (
+export const AccordionItem = ({
+  value,
+  className,
+  children,
+}: PropsWithChildren<AccordionItemProps>) => (
   <AccordionItemContext.Provider value={{ value }}>
     <div className={cn('rounded-lg border border-slate-200 bg-white', className)}>{children}</div>
   </AccordionItemContext.Provider>
 );
 
-export const AccordionTrigger = ({ className, children }: PropsWithChildren<{ className?: string }>) => {
+export const AccordionTrigger = ({
+  className,
+  children,
+}: PropsWithChildren<{ className?: string }>) => {
   const accordionContext = useContext(AccordionContext);
   const itemContext = useContext(AccordionItemContext);
 
@@ -85,7 +92,10 @@ export const AccordionTrigger = ({ className, children }: PropsWithChildren<{ cl
     <button
       type="button"
       onClick={() => accordionContext.toggle(itemContext.value)}
-      className={cn('flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium', className)}
+      className={cn(
+        'flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium',
+        className,
+      )}
     >
       <span>{children}</span>
       <span className="text-sm leading-none text-slate-500">{open ? '▾' : '▸'}</span>
@@ -93,7 +103,10 @@ export const AccordionTrigger = ({ className, children }: PropsWithChildren<{ cl
   );
 };
 
-export const AccordionContent = ({ className, children }: PropsWithChildren<{ className?: string }>) => {
+export const AccordionContent = ({
+  className,
+  children,
+}: PropsWithChildren<{ className?: string }>) => {
   const accordionContext = useContext(AccordionContext);
   const itemContext = useContext(AccordionItemContext);
 

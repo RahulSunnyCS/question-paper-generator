@@ -24,10 +24,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const payload: unknown = await request.json();
 
     if (!isPaperPayload(payload)) {
-      return NextResponse.json(
-        { error: 'Invalid paper payload.' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Invalid paper payload.' }, { status: 400 });
     }
 
     console.info('[pdf] Generating PDF for paper:', payload.paperTitle);
@@ -47,9 +44,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   } catch (error) {
     console.error('[pdf] PDF generation failed.', error);
 
-    return NextResponse.json(
-      { error: 'Unable to generate PDF right now.' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Unable to generate PDF right now.' }, { status: 500 });
   }
 }

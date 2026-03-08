@@ -77,7 +77,10 @@ export const PaginatedPreview = ({ paper, enableRefreshButton = true }: Paginate
         )}
       </div>
 
-      <div ref={previewRef} className="paged-preview-output rounded border border-slate-200 bg-slate-100 p-4" />
+      <div
+        ref={previewRef}
+        className="paged-preview-output rounded border border-slate-200 bg-slate-100 p-4"
+      />
       <div ref={sourceRef} className="paged-preview-source" aria-hidden="true">
         <QuestionPaperPrintLayout paper={paper} />
       </div>

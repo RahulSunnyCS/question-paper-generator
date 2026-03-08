@@ -2,7 +2,12 @@ import { FormEvent, useMemo } from 'react';
 import { questionTypes, usePaperBuilderStore } from '@/store/paperBuilderStore';
 import { Paper } from '@/types/paper';
 import { PaginatedPreview } from '@/components/PaginatedPreview';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
@@ -59,17 +64,29 @@ export const PaperBuilder = () => {
       <form onSubmit={handleValidate} className="space-y-4 rounded-xl bg-white p-6 shadow">
         <div>
           <label className="mb-1 block text-sm font-medium text-slate-700">Paper Title</label>
-          <Input value={paperTitle} onChange={(event) => setPaperTitle(event.target.value)} placeholder="Mid-Term Examination" />
+          <Input
+            value={paperTitle}
+            onChange={(event) => setPaperTitle(event.target.value)}
+            placeholder="Mid-Term Examination"
+          />
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
           <div>
             <label className="mb-1 block text-sm font-medium text-slate-700">Subject</label>
-            <Input value={subject} onChange={(event) => setSubject(event.target.value)} placeholder="Mathematics" />
+            <Input
+              value={subject}
+              onChange={(event) => setSubject(event.target.value)}
+              placeholder="Mathematics"
+            />
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium text-slate-700">Duration</label>
-            <Input value={duration} onChange={(event) => setDuration(event.target.value)} placeholder="3 Hours" />
+            <Input
+              value={duration}
+              onChange={(event) => setDuration(event.target.value)}
+              placeholder="3 Hours"
+            />
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium text-slate-700">Total Marks</label>
@@ -78,7 +95,9 @@ export const PaperBuilder = () => {
               min={0}
               value={totalMarks === 0 ? '' : totalMarks}
               onChange={(event) =>
-                setTotalMarks(event.target.value === '' ? 0 : Number.parseInt(event.target.value, 10))
+                setTotalMarks(
+                  event.target.value === '' ? 0 : Number.parseInt(event.target.value, 10),
+                )
               }
               placeholder="100"
             />
@@ -146,7 +165,9 @@ export const PaperBuilder = () => {
                       onChange={(event) => updateSection(section.id, { title: event.target.value })}
                       placeholder="Section title"
                     />
-                    {sectionError?.title && <p className="text-xs text-rose-600">{sectionError.title}</p>}
+                    {sectionError?.title && (
+                      <p className="text-xs text-rose-600">{sectionError.title}</p>
+                    )}
 
                     <Textarea
                       value={section.instructions}
@@ -162,7 +183,9 @@ export const PaperBuilder = () => {
 
                   <Accordion
                     type="multiple"
-                    defaultValue={section.questions.map((question) => `${section.id}:${question.id}`)}
+                    defaultValue={section.questions.map(
+                      (question) => `${section.id}:${question.id}`,
+                    )}
                     className="space-y-3"
                   >
                     {section.questions.map((question, questionIndex) => {
@@ -170,7 +193,11 @@ export const PaperBuilder = () => {
                       const questionValue = `${section.id}:${question.id}`;
 
                       return (
-                        <AccordionItem key={question.id} value={questionValue} className="bg-slate-50">
+                        <AccordionItem
+                          key={question.id}
+                          value={questionValue}
+                          className="bg-slate-50"
+                        >
                           <div className="flex items-center justify-between gap-3 px-2">
                             <AccordionTrigger className="flex-1 py-3 text-xs font-medium text-slate-700">
                               Question {questionIndex + 1}
@@ -190,7 +217,11 @@ export const PaperBuilder = () => {
                             <div className="grid gap-2 md:grid-cols-3">
                               <Textarea
                                 value={question.text}
-                                onChange={(event) => updateQuestion(section.id, question.id, { text: event.target.value })}
+                                onChange={(event) =>
+                                  updateQuestion(section.id, question.id, {
+                                    text: event.target.value,
+                                  })
+                                }
                                 className="md:col-span-2"
                                 rows={2}
                                 placeholder="Enter question text"
@@ -218,7 +249,10 @@ export const PaperBuilder = () => {
                                   value={question.marks}
                                   onChange={(event) =>
                                     updateQuestion(section.id, question.id, {
-                                      marks: event.target.value === '' ? '' : Number.parseInt(event.target.value, 10),
+                                      marks:
+                                        event.target.value === ''
+                                          ? ''
+                                          : Number.parseInt(event.target.value, 10),
                                     })
                                   }
                                   placeholder="Marks"
@@ -241,18 +275,33 @@ export const PaperBuilder = () => {
                             {question.type === 'Match the Following' && (
                               <div className="mt-2 space-y-2">
                                 {question.matchPairs.map((pair) => (
-                                  <div key={pair.id} className="grid grid-cols-[1fr_1fr_auto] gap-2">
+                                  <div
+                                    key={pair.id}
+                                    className="grid grid-cols-[1fr_1fr_auto] gap-2"
+                                  >
                                     <Input
                                       value={pair.left}
                                       onChange={(event) =>
-                                        updateMatchPair(section.id, question.id, pair.id, 'left', event.target.value)
+                                        updateMatchPair(
+                                          section.id,
+                                          question.id,
+                                          pair.id,
+                                          'left',
+                                          event.target.value,
+                                        )
                                       }
                                       placeholder="Column A"
                                     />
                                     <Input
                                       value={pair.right}
                                       onChange={(event) =>
-                                        updateMatchPair(section.id, question.id, pair.id, 'right', event.target.value)
+                                        updateMatchPair(
+                                          section.id,
+                                          question.id,
+                                          pair.id,
+                                          'right',
+                                          event.target.value,
+                                        )
                                       }
                                       placeholder="Column B"
                                     />
@@ -260,7 +309,9 @@ export const PaperBuilder = () => {
                                       type="button"
                                       variant="ghost"
                                       size="sm"
-                                      onClick={() => removeMatchPair(section.id, question.id, pair.id)}
+                                      onClick={() =>
+                                        removeMatchPair(section.id, question.id, pair.id)
+                                      }
                                       className="bg-rose-100 text-rose-700 hover:bg-rose-200"
                                     >
                                       Delete

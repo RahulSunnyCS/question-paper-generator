@@ -1,12 +1,6 @@
 import type { Section } from '../../shared/types/paper';
 
-export type {
-  MatchPair,
-  Paper,
-  Question,
-  QuestionType,
-  Section,
-} from '../../shared/types/paper';
+export type { MatchPair, Paper, Question, QuestionType, Section } from '../../shared/types/paper';
 
 export interface ValidationError {
   title?: string;
