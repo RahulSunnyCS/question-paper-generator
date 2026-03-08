@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { PaperBuilderState, Question, QuestionType, Section } from '../types/paper';
 
 interface PaperBuilderActions {
@@ -39,7 +40,9 @@ const defaultSection = (): Section => ({
   questions: [defaultQuestion()],
 });
 
-export const usePaperBuilderStore = create<PaperBuilderState & PaperBuilderActions>((set, get) => ({
+export const usePaperBuilderStore = create<PaperBuilderState & PaperBuilderActions>()(
+  persist(
+    (set, get) => ({
   paperTitle: 'Untitled Question Paper',
   sections: [defaultSection()],
   errors: {},
@@ -217,6 +220,17 @@ export const usePaperBuilderStore = create<PaperBuilderState & PaperBuilderActio
     set({ errors });
     return Object.keys(errors).length === 0;
   },
-}));
+    }),
+    {
+      name: 'question-paper-builder',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        paperTitle: state.paperTitle,
+        sections: state.sections,
+        errors: state.errors,
+      }),
+    },
+  ),
+);
 
 export const questionTypes: QuestionType[] = ['Fill in the Blanks', 'Match the Following'];
