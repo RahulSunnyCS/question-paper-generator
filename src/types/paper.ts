@@ -24,6 +24,10 @@ export interface ValidationError {
 
 export interface PaperBuilderState {
   paperTitle: string;
+  subject: string;
+  duration: string;
+  totalMarks: number;
+  instructions: string[];
   sections: Section[];
   errors: Record<string, ValidationError>;
 }
