@@ -29,4 +29,10 @@ export interface Paper {
   totalMarks: number;
   instructions: string[];
   sections: Section[];
+  subjectCode?: string;
+  grade?: string;
+  assessmentType?: string;
+  schoolName?: string;
+  schoolLogoUrl?: string;
+  boardLogoUrl?: string;
 }
