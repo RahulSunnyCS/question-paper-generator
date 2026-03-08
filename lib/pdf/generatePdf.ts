@@ -1,6 +1,5 @@
 import type { Paper } from '../../shared/types/paper';
 import { getBrowser } from './browserManager';
-import { renderPaperHtml } from './renderHtml';
 
 const A4_VIEWPORT = {
   width: 794,
@@ -26,6 +25,7 @@ export const generatePdf = async (paper: Paper): Promise<Buffer> => {
       `,
     });
 
+    const { renderPaperHtml } = await import('./renderHtml');
     const html = renderPaperHtml(paper);
 
     await page.setContent(html, {

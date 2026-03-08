@@ -1,3 +1,5 @@
+export const runtime = 'nodejs';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { generatePdf } from '../../../lib/pdf/generatePdf';
 import type { Paper } from '../../../shared/types/paper';
