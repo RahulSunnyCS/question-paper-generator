@@ -1,3 +1,4 @@
+import { Semaphore } from 'async-mutex';
 import type { Paper } from '../../shared/types/paper';
 import { getBrowser } from './browserManager';
 import { renderPaperHtml } from './renderHtml';
@@ -7,8 +8,13 @@ const A4_VIEWPORT = {
   height: 1123,
 };
 
+const MAX_CONCURRENT_PAGES = 3;
+const pageSemaphore = new Semaphore(MAX_CONCURRENT_PAGES);
+
 export const generatePdf = async (paper: Paper): Promise<Buffer> => {
   const browser = await getBrowser();
+
+  const [, release] = await pageSemaphore.acquire();
   const page = await browser.newPage({
     viewport: A4_VIEWPORT,
     deviceScaleFactor: 1,
@@ -54,5 +60,6 @@ export const generatePdf = async (paper: Paper): Promise<Buffer> => {
     );
   } finally {
     await page.close({ runBeforeUnload: false });
+    release();
   }
 };
