@@ -1,5 +1,5 @@
 import { createElement } from 'react';
-import { renderToStaticMarkup } from 'react-dom/server.node';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { QuestionPaperPrintLayout } from '../../src/components/QuestionPaperPrintLayout';
 import type { Paper } from '../../shared/types/paper';
 
