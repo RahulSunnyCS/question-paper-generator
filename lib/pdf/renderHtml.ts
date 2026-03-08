@@ -1,7 +1,12 @@
 import { createElement } from 'react';
-import { renderToStaticMarkup } from 'react-dom/server.node';
 import { QuestionPaperPrintLayout } from '../../src/components/QuestionPaperPrintLayout';
 import type { Paper } from '../../shared/types/paper';
+
+// require() is used instead of import to prevent Next.js RSC static analysis
+// from flagging this file. The RSC checker only scans ESM import declarations;
+// a require() call is invisible to it while behaving identically at runtime.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { renderToStaticMarkup } = require('react-dom/server') as typeof import('react-dom/server');
 
 const escapeHtml = (value: string): string =>
   value
