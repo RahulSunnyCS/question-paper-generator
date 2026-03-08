@@ -34,7 +34,7 @@ export const renderPaperHtml = (paper: Paper): string => {
       body {
         margin: 0;
         padding: 0;
-        font-family: Inter, Arial, Helvetica, sans-serif;
+        font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
         color: #111827;
         font-size: 12px;
         line-height: 1.5;
