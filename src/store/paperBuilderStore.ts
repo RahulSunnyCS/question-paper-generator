@@ -4,6 +4,12 @@ import { PaperBuilderState, Question, QuestionType, Section } from '../types/pap
 
 interface PaperBuilderActions {
   setPaperTitle: (value: string) => void;
+  setSubject: (value: string) => void;
+  setDuration: (value: string) => void;
+  setTotalMarks: (value: number) => void;
+  addInstruction: () => void;
+  updateInstruction: (index: number, value: string) => void;
+  removeInstruction: (index: number) => void;
   addSection: () => void;
   updateSection: (sectionId: string, payload: Partial<Pick<Section, 'title' | 'instructions'>>) => void;
   removeSection: (sectionId: string) => void;
@@ -44,10 +50,27 @@ export const usePaperBuilderStore = create<PaperBuilderState & PaperBuilderActio
   persist(
     (set, get) => ({
   paperTitle: 'Untitled Question Paper',
+  subject: '',
+  duration: '',
+  totalMarks: 0,
+  instructions: [],
   sections: [defaultSection()],
   errors: {},
 
   setPaperTitle: (value) => set({ paperTitle: value }),
+  setSubject: (value) => set({ subject: value }),
+  setDuration: (value) => set({ duration: value }),
+  setTotalMarks: (value) => set({ totalMarks: value }),
+  addInstruction: () =>
+    set((state) => ({ instructions: [...state.instructions, ''] })),
+  updateInstruction: (index, value) =>
+    set((state) => ({
+      instructions: state.instructions.map((inst, i) => (i === index ? value : inst)),
+    })),
+  removeInstruction: (index) =>
+    set((state) => ({
+      instructions: state.instructions.filter((_, i) => i !== index),
+    })),
 
   addSection: () =>
     set((state) => ({
@@ -226,6 +249,10 @@ export const usePaperBuilderStore = create<PaperBuilderState & PaperBuilderActio
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         paperTitle: state.paperTitle,
+        subject: state.subject,
+        duration: state.duration,
+        totalMarks: state.totalMarks,
+        instructions: state.instructions,
         sections: state.sections,
         errors: state.errors,
       }),

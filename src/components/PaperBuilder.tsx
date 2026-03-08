@@ -12,9 +12,19 @@ import { DownloadPdfButton } from '@/components/DownloadPdfButton';
 export const PaperBuilder = () => {
   const {
     paperTitle,
+    subject,
+    duration,
+    totalMarks,
+    instructions,
     sections,
     errors,
     setPaperTitle,
+    setSubject,
+    setDuration,
+    setTotalMarks,
+    addInstruction,
+    updateInstruction,
+    removeInstruction,
     addSection,
     updateSection,
     removeSection,
@@ -27,26 +37,17 @@ export const PaperBuilder = () => {
     validatePaper,
   } = usePaperBuilderStore();
 
-  const printPaper = useMemo<Paper>(() => {
-    const totalMarks = sections.reduce(
-      (sectionSum, section) =>
-        sectionSum +
-        section.questions.reduce(
-          (questionSum, question) => questionSum + (typeof question.marks === 'number' ? question.marks : 0),
-          0,
-        ),
-      0,
-    );
-
-    return {
+  const printPaper = useMemo<Paper>(
+    () => ({
       paperTitle: paperTitle.trim() || 'Untitled Question Paper',
-      subject: 'General',
-      duration: '3 Hours',
+      subject: subject.trim() || 'General',
+      duration: duration.trim() || '3 Hours',
       totalMarks,
-      instructions: ['Answer all questions.', 'Write clearly and legibly.'],
+      instructions,
       sections,
-    };
-  }, [paperTitle, sections]);
+    }),
+    [paperTitle, subject, duration, totalMarks, instructions, sections],
+  );
 
   const handleValidate = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -59,6 +60,58 @@ export const PaperBuilder = () => {
         <div>
           <label className="mb-1 block text-sm font-medium text-slate-700">Paper Title</label>
           <Input value={paperTitle} onChange={(event) => setPaperTitle(event.target.value)} placeholder="Mid-Term Examination" />
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label className="mb-1 block text-sm font-medium text-slate-700">Subject</label>
+            <Input value={subject} onChange={(event) => setSubject(event.target.value)} placeholder="Mathematics" />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-slate-700">Duration</label>
+            <Input value={duration} onChange={(event) => setDuration(event.target.value)} placeholder="3 Hours" />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-slate-700">Total Marks</label>
+            <Input
+              type="number"
+              min={0}
+              value={totalMarks === 0 ? '' : totalMarks}
+              onChange={(event) =>
+                setTotalMarks(event.target.value === '' ? 0 : Number.parseInt(event.target.value, 10))
+              }
+              placeholder="100"
+            />
+          </div>
+        </div>
+
+        <div>
+          <div className="mb-1 flex items-center justify-between">
+            <label className="text-sm font-medium text-slate-700">General Instructions</label>
+            <Button type="button" variant="outline" size="sm" onClick={addInstruction}>
+              + Add Instruction
+            </Button>
+          </div>
+          <div className="space-y-2">
+            {instructions.map((instruction, index) => (
+              <div key={index} className="flex gap-2">
+                <Input
+                  value={instruction}
+                  onChange={(event) => updateInstruction(index, event.target.value)}
+                  placeholder={`Instruction ${index + 1}`}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeInstruction(index)}
+                  className="shrink-0 bg-rose-100 text-rose-700 hover:bg-rose-200"
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+          </div>
         </div>
 
         <Accordion
