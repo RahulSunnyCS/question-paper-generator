@@ -1,11 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // react-dom/server.node needs the full React build (which has ReactCurrentDispatcher).
-  // By default Next.js bundles react-dom into its RSC bundle using the restricted
-  // react-server export condition, which lacks those internals.
-  // Marking react-dom as an external package makes Next.js load it at runtime via
-  // Node require(), where it picks up the full build from node_modules.
-  serverExternalPackages: ['react-dom'],
+  // Next.js 15 bundles React 19 internally (next/dist/compiled/react) for the RSC
+  // pipeline, but node_modules/react is React 18. renderToStaticMarkup in
+  // react-dom/server.node can only handle elements created by the same React build it
+  // was compiled against. Externalising both packages forces every import of 'react'
+  // and 'react-dom' in the server bundle to resolve to node_modules at runtime,
+  // guaranteeing a single shared React 18 instance across createElement, the JSX
+  // transform inside QuestionPaperPrintLayout, and renderToStaticMarkup.
+  serverExternalPackages: ['react', 'react-dom'],
 };
 
 module.exports = nextConfig;
