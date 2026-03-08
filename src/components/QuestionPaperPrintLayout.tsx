@@ -77,7 +77,7 @@ export const QuestionPaperPrintLayout = ({ paper }: QuestionPaperPrintLayoutProp
     <article className="qp-paper">
       <style>{`
         :root {
-          --qp-font-serif: 'Times New Roman', Times, 'Liberation Serif', serif;
+          --qp-font-base: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
           --qp-text-base: 12pt;
           --qp-text-meta: 10.5pt;
           --qp-text-section: 14pt;
@@ -95,7 +95,7 @@ export const QuestionPaperPrintLayout = ({ paper }: QuestionPaperPrintLayoutProp
           box-sizing: border-box;
           color: #111;
           background: #fff;
-          font-family: var(--qp-font-serif);
+          font-family: var(--qp-font-base);
           font-size: var(--qp-text-base);
           line-height: 1.45;
           counter-reset: page;
