@@ -24,4 +24,10 @@ export interface PaperBuilderState {
   instructions: string[];
   sections: Section[];
   errors: Record<string, ValidationError>;
+  subjectCode?: string;
+  grade?: string;
+  assessmentType?: string;
+  schoolName?: string;
+  schoolLogoUrl?: string;
+  boardLogoUrl?: string;
 }

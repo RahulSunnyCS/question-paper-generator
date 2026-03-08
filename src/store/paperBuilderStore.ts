@@ -7,6 +7,12 @@ interface PaperBuilderActions {
   setSubject: (value: string) => void;
   setDuration: (value: string) => void;
   setTotalMarks: (value: number) => void;
+  setSubjectCode: (value: string) => void;
+  setGrade: (value: string) => void;
+  setAssessmentType: (value: string) => void;
+  setSchoolName: (value: string) => void;
+  setSchoolLogoUrl: (value: string) => void;
+  setBoardLogoUrl: (value: string) => void;
   addInstruction: () => void;
   updateInstruction: (index: number, value: string) => void;
   removeInstruction: (index: number) => void;
@@ -64,6 +70,12 @@ export const usePaperBuilderStore = create<PaperBuilderState & PaperBuilderActio
       setSubject: (value) => set({ subject: value }),
       setDuration: (value) => set({ duration: value }),
       setTotalMarks: (value) => set({ totalMarks: value }),
+      setSubjectCode: (value) => set({ subjectCode: value }),
+      setGrade: (value) => set({ grade: value }),
+      setAssessmentType: (value) => set({ assessmentType: value }),
+      setSchoolName: (value) => set({ schoolName: value }),
+      setSchoolLogoUrl: (value) => set({ schoolLogoUrl: value }),
+      setBoardLogoUrl: (value) => set({ boardLogoUrl: value }),
       addInstruction: () => set((state) => ({ instructions: [...state.instructions, ''] })),
       updateInstruction: (index, value) =>
         set((state) => ({
@@ -260,6 +272,12 @@ export const usePaperBuilderStore = create<PaperBuilderState & PaperBuilderActio
         instructions: state.instructions,
         sections: state.sections,
         errors: state.errors,
+        subjectCode: state.subjectCode,
+        grade: state.grade,
+        assessmentType: state.assessmentType,
+        schoolName: state.schoolName,
+        schoolLogoUrl: state.schoolLogoUrl,
+        boardLogoUrl: state.boardLogoUrl,
       }),
     },
   ),
