@@ -23,7 +23,7 @@ interface UseGeneratePdfResult {
   error: string | null;
 }
 
-export const useGeneratePdf = (paper: Paper): UseGeneratePdfResult => {
+export const useGeneratePdf = (paper: Paper, headerFile: File | null = null): UseGeneratePdfResult => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,12 +32,16 @@ export const useGeneratePdf = (paper: Paper): UseGeneratePdfResult => {
     setError(null);
 
     try {
+      const formData = new FormData();
+      formData.append('paper', JSON.stringify(paper));
+
+      if (headerFile) {
+        formData.append('headerPdf', headerFile, headerFile.name);
+      }
+
       const response = await fetch('/api/generate-pdf', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(paper),
+        body: formData,
       });
 
       if (!response.ok) {
@@ -62,7 +66,7 @@ export const useGeneratePdf = (paper: Paper): UseGeneratePdfResult => {
     } finally {
       setIsLoading(false);
     }
-  }, [paper]);
+  }, [paper, headerFile]);
 
   return {
     generatePdf,

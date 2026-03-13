@@ -4,10 +4,11 @@ import { useGeneratePdf } from '@/hooks/useGeneratePdf';
 
 interface DownloadPdfButtonProps {
   paper: Paper;
+  headerFile?: File | null;
 }
 
-export const DownloadPdfButton = ({ paper }: DownloadPdfButtonProps) => {
-  const { generatePdf, isLoading, error } = useGeneratePdf(paper);
+export const DownloadPdfButton = ({ paper, headerFile = null }: DownloadPdfButtonProps) => {
+  const { generatePdf, isLoading, error } = useGeneratePdf(paper, headerFile);
 
   return (
     <div className="space-y-1">

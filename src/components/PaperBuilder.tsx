@@ -1,4 +1,4 @@
-import { FormEvent, useMemo } from 'react';
+import { FormEvent, useMemo, useRef, ChangeEvent } from 'react';
 import { questionTypes, usePaperBuilderStore } from '@/store/paperBuilderStore';
 import { Paper } from '@/types/paper';
 import { PaginatedPreview } from '@/components/PaginatedPreview';
@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { DownloadPdfButton } from '@/components/DownloadPdfButton';
+import { useHeaderFile } from '@/hooks/useHeaderFile';
 
 export const PaperBuilder = () => {
   const {
@@ -41,6 +42,18 @@ export const PaperBuilder = () => {
     removeMatchPair,
     validatePaper,
   } = usePaperBuilderStore();
+
+  const { headerFile, uploadError, setHeaderFile, clearHeaderFile } = useHeaderFile();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setHeaderFile(file);
+    }
+    // Reset input so the same file can be re-selected after clearing
+    event.target.value = '';
+  };
 
   const printPaper = useMemo<Paper>(
     () => ({
@@ -102,6 +115,44 @@ export const PaperBuilder = () => {
               placeholder="100"
             />
           </div>
+        </div>
+
+        <div>
+          <label className="mb-1 block text-sm font-medium text-slate-700">
+            Header Pages (optional)
+          </label>
+          <p className="mb-2 text-xs text-slate-500">
+            Upload a PDF (max 2 MB) to prepend as header pages before the question paper.
+          </p>
+          {headerFile ? (
+            <div className="flex items-center gap-2 rounded-md border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm">
+              <span className="flex-1 truncate text-indigo-800">{headerFile.name}</span>
+              <button
+                type="button"
+                onClick={clearHeaderFile}
+                className="shrink-0 text-xs text-rose-600 hover:text-rose-800"
+              >
+                Remove
+              </button>
+            </div>
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              Upload PDF
+            </Button>
+          )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/pdf"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+          {uploadError && <p className="mt-1 text-xs text-rose-600">{uploadError}</p>}
         </div>
 
         <div>
@@ -364,7 +415,7 @@ export const PaperBuilder = () => {
           <Button type="submit" variant="default">
             Validate Paper
           </Button>
-          <DownloadPdfButton paper={printPaper} />
+          <DownloadPdfButton paper={printPaper} headerFile={headerFile} />
         </div>
       </form>
 
